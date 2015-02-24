@@ -1,0 +1,6 @@
+{
+    "name": "blesta/proration",
+    "require": {
+        "php": ">=5.1.0"
+    }
+}
