@@ -84,11 +84,12 @@ class Proration
             $next_first = strtotime($first . ' + 1 month');
 
             $time = $start_time;
-            $day = $days_in_month;
+            $day = $this->prorate_day;
 
-            if ($this->prorate_day < $days_in_month) {
+            if ($day > $days_in_month) {
+                $day = $days_in_month;
+            } elseif ($day < $current_day) {
                 $time = $next_first;
-                $day = $this->prorate_day;
             }
 
             $result = date(

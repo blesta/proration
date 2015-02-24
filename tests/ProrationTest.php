@@ -44,6 +44,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2015-03-01T00:00:00-08:00"),
             array("2015-02-13T14:30:00-08:00", 31, 1, Proration::PERIOD_YEAR, "2015-02-28T00:00:00-08:00"),
             array("2015-03-13T14:30:00-08:00", 31, 1, Proration::PERIOD_MONTH, "2015-03-31T00:00:00-08:00"),
+            array("2015-02-24T14:30:00-08:00", 26, 1, Proration::PERIOD_YEAR, "2015-02-26T00:00:00-08:00"),
             array("2015-01-31T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2015-02-01T00:00:00-08:00"),
             array("2015-02-01T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, null),
             array("2015-02-28T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2015-03-01T00:00:00-08:00"),
