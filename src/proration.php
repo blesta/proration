@@ -42,6 +42,11 @@ class Proration
      * @var string The period
      */
     protected $period;
+    
+    /**
+     * @var string The time zone
+     */
+    protected $time_zone;
 
     /**
      * Initialize proration
@@ -54,9 +59,61 @@ class Proration
     public function __construct($start_date, $prorate_day, $term, $period)
     {
         $this->start_date = $start_date;
-        $this->prorate_day = $prorate_day;
-        $this->term = $term;
+        $this->prorate_day = (int) $prorate_day;
+        $this->term = (int) $term;
         $this->period = $period;
+    }
+    
+    /**
+     * Set the timezone to use for date calculations
+     *
+     * @param string $time_zone
+     * @return this
+     */
+    public function setTimeZone($time_zone)
+    {
+        $this->time_zone = $time_zone;
+        return $this;
+    }
+    
+    /**
+     * Fetches the start date
+     *
+     * @return string The start date in use
+     */
+    public function startDate()
+    {
+        return $this->start_date;
+    }
+    
+    /**
+     * Fetches the prorate day
+     *
+     * @return int The prorate day in use
+     */
+    public function prorateDay()
+    {
+        return $this->prorate_day;
+    }
+    
+    /**
+     * Fetches the term
+     *
+     * @return int The term in use
+     */
+    public function term()
+    {
+        return $this->term;
+    }
+    
+    /**
+     * Fetches the period
+     *
+     * @return string The period in use
+     */
+    public function period()
+    {
+        return $this->period;
     }
 
     /**
@@ -70,6 +127,12 @@ class Proration
             return null;
         }
 
+        $cur_time_zone = date_default_timezone_get();
+
+        if (null !== $this->time_zone) {
+            date_default_timezone_set($this->time_zone);
+        }
+        
         // Fetch time zone offset of given date
         $offset = substr($this->start_date, 19);
 
@@ -80,10 +143,10 @@ class Proration
         $result = null;
 
         if ($current_day != $this->prorate_day) {
-            $first = date('Y-m-01\TH:i:s', $start_time);
+            $first = date('c', strtotime("-" . ($current_day-1) . " days", $start_time));
             $next_first = strtotime($first . ' + 1 month');
 
-            $time = $start_time;
+            $time = strtotime($first);
             $day = $this->prorate_day;
 
             if ($day > $days_in_month) {
@@ -91,13 +154,19 @@ class Proration
             } elseif ($day < $current_day) {
                 $time = $next_first;
             }
-
+            
             $result = date(
-                'Y-m-' . str_pad($day, 2, 0, STR_PAD_LEFT) . '\T00:00:00',
-                $time
-            ) . $offset;
+                'Y-m-d\T00:00:00P',
+                strtotime("+" . ($day-1) . " days", $time)
+            );
+
+            // Set original offset, no timezone given
+            if (null === $this->time_zone) {
+                $result = substr($result, 0, -6) . $offset;
+            }
         }
 
+        date_default_timezone_set($cur_time_zone);
         return $result;
     }
 
@@ -166,4 +235,23 @@ class Proration
 
         return 0.0;
     }
+    
+    /**
+     * Determine the difference between this proration object and the given one
+     *
+     * @param Proration $proration
+     * @return Proration An object that represents the prorated difference
+     *  between the current prorated object and the given one
+     */
+    /*
+    public function diff(Proration $proration)
+    {
+        return new Proration(
+            $this->prorateDate(),
+            $proration->prorateDay(),
+            $proration->term(),
+            $proration->period()
+        );
+    }
+    */
 }

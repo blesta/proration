@@ -13,23 +13,32 @@ class ProrationTest extends PHPUnit_Framework_TestCase
     }
     
     /**
+     * @covers ::setTimeZone
+     */
+    public function testSetTimeZone()
+    {
+        $proration = new Proration("", 1, 1, Proration::PERIOD_MONTH);
+        $this->assertInstanceOf('Proration', $proration->setTimeZone('America/New_York'));
+    }
+    
+    /**
      * @covers ::prorateDate
      * @dataProvider prorateDateProvider
      */
-    public function testProrateDate($start_date, $prorate_day, $term, $period, $result)
+    public function testProrateDate($start_date, $prorate_day, $term, $period, $time_zone, $result)
     {
         $proration = new Proration($start_date, $prorate_day, $term, $period);
-        $this->assertEquals($result, $proration->prorateDate());
+        $this->assertEquals($result, $proration->setTimeZone($time_zone)->prorateDate());
     }
     
     /**
      * @covers ::canProrate
      * @dataProvider prorateDateProvider
      */
-    public function testCanProrate($start_date, $prorate_day, $term, $period, $result)
+    public function testCanProrate($start_date, $prorate_day, $term, $period, $time_zone, $result)
     {
         $proration = new Proration($start_date, $prorate_day, $term, $period);
-        $this->assertEquals($result !== null, $proration->canProrate());
+        $this->assertEquals($result !== null, $proration->setTimeZone($time_zone)->canProrate());
     }
     
     /**
@@ -40,20 +49,47 @@ class ProrationTest extends PHPUnit_Framework_TestCase
     public function prorateDateProvider()
     {
         return array(
-            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_YEAR, "2015-03-01T00:00:00-08:00"),
-            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2015-03-01T00:00:00-08:00"),
-            array("2015-02-13T14:30:00-08:00", 31, 1, Proration::PERIOD_YEAR, "2015-02-28T00:00:00-08:00"),
-            array("2015-03-13T14:30:00-08:00", 31, 1, Proration::PERIOD_MONTH, "2015-03-31T00:00:00-08:00"),
-            array("2015-02-24T14:30:00-08:00", 26, 1, Proration::PERIOD_YEAR, "2015-02-26T00:00:00-08:00"),
-            array("2015-01-31T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2015-02-01T00:00:00-08:00"),
-            array("2015-02-01T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, null),
-            array("2015-02-28T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2015-03-01T00:00:00-08:00"),
-            array("2016-02-29T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, "2016-03-01T00:00:00-08:00"),
-            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_WEEK, null),
-            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_DAY, null),
-            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_ONETIME, null),
-            array("2015-02-13T14:30:00-08:00", 0, 1, Proration::PERIOD_MONTH, null),
-            array("2015-02-13T14:30:00-08:00", -1, 1, Proration::PERIOD_MONTH, null)
+            // UTC to time zone
+            array(
+                "2015-02-13T05:00:00-00:00",
+                1,
+                1,
+                Proration::PERIOD_MONTH,
+                "America/New_York",
+                "2015-03-01T00:00:00-05:00"
+            ),
+            // DST starts
+            array(
+                "2015-02-13T12:00:00-05:00",
+                11,
+                1,
+                Proration::PERIOD_MONTH,
+                "America/New_York",
+                "2015-03-11T00:00:00-04:00"
+            ),
+            // DST ends
+            array(
+                "2015-10-31T12:00:00-04:00",
+                1,
+                1,
+                Proration::PERIOD_MONTH,
+                "America/New_York",
+                "2015-11-01T00:00:00-05:00"
+            ),
+            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_YEAR, null, "2015-03-01T00:00:00-08:00"),
+            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_MONTH, null, "2015-03-01T00:00:00-08:00"),
+            array("2015-02-13T14:30:00-08:00", 31, 1, Proration::PERIOD_YEAR, null, "2015-02-28T00:00:00-08:00"),
+            array("2015-03-13T14:30:00-08:00", 31, 1, Proration::PERIOD_MONTH, null, "2015-03-31T00:00:00-08:00"),
+            array("2015-02-24T14:30:00-08:00", 26, 1, Proration::PERIOD_YEAR, null, "2015-02-26T00:00:00-08:00"),
+            array("2015-01-31T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, null, "2015-02-01T00:00:00-08:00"),
+            array("2015-02-01T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, null, null),
+            array("2015-02-28T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, null, "2015-03-01T00:00:00-08:00"),
+            array("2016-02-29T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH, null, "2016-03-01T00:00:00-08:00"),
+            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_WEEK, null, null),
+            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_DAY, null, null),
+            array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_ONETIME, null, null),
+            array("2015-02-13T14:30:00-08:00", 0, 1, Proration::PERIOD_MONTH, null, null),
+            array("2015-02-13T14:30:00-08:00", -1, 1, Proration::PERIOD_MONTH, null, null)
         );
     }
     
