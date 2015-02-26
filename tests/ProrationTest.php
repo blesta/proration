@@ -180,4 +180,73 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             array(0, 1, 1, Proration::PERIOD_MONTH, 100.0, 0.0)
         );
     }
+    
+    /**
+     * @covers ::setProratablePeriods
+     * @covers ::proratePrice
+     * @covers ::canProrate
+     * @dataProvider proratablePeriodsProvider
+     *
+     * @param Proration $from_proration
+     * @param float $from_price
+     * @param Proration $to_proration
+     * @param float $to_price
+     * @param float $diff_price
+     */
+    public function testSetProratablePeriods(Proration $from_proration, $from_price, Proration $to_proration, $to_price, $diff_price)
+    {
+        $all_periods = array(
+            Proration::PERIOD_DAY,
+            Proration::PERIOD_WEEK,
+            Proration::PERIOD_MONTH,
+            Proration::PERIOD_YEAR,
+            Proration::PERIOD_ONETIME
+        );
+        
+        $from_proration->setProratablePeriods($all_periods);
+        $to_proration->setProratablePeriods($all_periods);
+        
+        $this->assertTrue($from_proration->canProrate());
+        $this->assertTrue($to_proration->canProrate());
+        
+        $this->assertEquals($diff_price, $to_proration->proratePrice($to_price) - $from_proration->proratePrice($from_price));
+    }
+    
+    /**
+     * Provider for testSetProratablePeriods
+     * @return array
+     */
+    public function proratablePeriodsProvider()
+    {
+        return array(
+            array(
+                new Proration("2015-02-25T08:00:00-00:00", 1, 1, Proration::PERIOD_MONTH),
+                1.00,
+                new Proration("2015-02-25T08:00:00-00:00", 1, 1, Proration::PERIOD_MONTH),
+                25.01,
+                3.4300
+            ),
+            array(
+                new Proration("2015-02-25T08:00:00-00:00", 1, 1, Proration::PERIOD_MONTH),
+                25.01,
+                new Proration("2015-02-25T08:00:00-00:00", 1, 3, Proration::PERIOD_YEAR),
+                350.00,
+                -2.2955
+            ),
+            array(
+                new Proration("2015-02-25T08:00:00-00:00", 26, 1, Proration::PERIOD_DAY),
+                1.00,
+                new Proration("2015-02-25T08:00:00-00:00", 26, 1, Proration::PERIOD_DAY),
+                0.50,
+                -0.50
+            ),
+            array(
+                new Proration("2015-02-25T08:00:00-00:00", 1, 2, Proration::PERIOD_DAY),
+                0.75,
+                new Proration("2015-02-25T08:00:00-00:00", 1, 1, Proration::PERIOD_MONTH),
+                25.01,
+                2.0729
+            )
+        );
+    }
 }

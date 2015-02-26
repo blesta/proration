@@ -65,10 +65,21 @@ class Proration
     }
     
     /**
+     * Set valid proratable periods
+     *
+     * @param array $periods All periods to allow proration on
+     * @return \Proration
+     */
+    public function setProratablePeriods(array $periods)
+    {
+        $this->proratable_periods = $periods;
+        return $this;
+    }
+    /**
      * Set the timezone to use for date calculations
      *
      * @param string $time_zone
-     * @return this
+     * @return \Proration
      */
     public function setTimeZone($time_zone)
     {
@@ -235,23 +246,4 @@ class Proration
 
         return 0.0;
     }
-    
-    /**
-     * Determine the difference between this proration object and the given one
-     *
-     * @param Proration $proration
-     * @return Proration An object that represents the prorated difference
-     *  between the current prorated object and the given one
-     */
-    /*
-    public function diff(Proration $proration)
-    {
-        return new Proration(
-            $this->prorateDate(),
-            $proration->prorateDay(),
-            $proration->term(),
-            $proration->period()
-        );
-    }
-    */
 }
