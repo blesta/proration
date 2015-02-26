@@ -17,8 +17,28 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      */
     public function testSetTimeZone()
     {
-        $proration = new Proration("", 1, 1, Proration::PERIOD_MONTH);
+        $proration = new Proration("2015-02-25T00:00:00-08:00", 1, 1, Proration::PERIOD_MONTH);
         $this->assertInstanceOf('Proration', $proration->setTimeZone('America/New_York'));
+    }
+    
+    /**
+     * @covers ::startDate
+     * @covers ::prorateDay
+     * @covers ::term
+     * @covers ::period
+     */
+    public function testGetters()
+    {
+        $start_date = "2015-02-25T00:00:00-08:00";
+        $prorate_day = 10;
+        $term = 1;
+        $period = Proration::PERIOD_MONTH;
+        $proration = new Proration($start_date, $prorate_day, $term, $period);
+        
+        $this->assertEquals($start_date, $proration->startDate());
+        $this->assertEquals($prorate_day, $proration->prorateDay());
+        $this->assertEquals($term, $proration->term());
+        $this->assertEquals($period, $proration->period());
     }
     
     /**
