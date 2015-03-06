@@ -80,21 +80,37 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             ),
             // DST starts
             array(
-                "2015-02-13T12:00:00-05:00",
-                11,
+                "2015-03-01T01:00:00-08:00",
+                8,
                 1,
                 Proration::PERIOD_MONTH,
-                "America/New_York",
-                "2015-03-11T00:00:00-04:00"
+                "America/Los_Angeles",
+                "2015-03-08T00:00:00-08:00"
+            ),
+            array(
+                "2015-03-01T14:15:22-08:00",
+                8,
+                1,
+                Proration::PERIOD_MONTH,
+                "America/Los_Angeles",
+                "2015-03-08T00:00:00-08:00"
             ),
             // DST ends
             array(
-                "2015-10-31T12:00:00-04:00",
+                "2015-10-15T01:00:00-07:00",
                 1,
                 1,
                 Proration::PERIOD_MONTH,
-                "America/New_York",
-                "2015-11-01T00:00:00-05:00"
+                "America/Los_Angeles",
+                "2015-11-01T00:00:00-07:00"
+            ),
+            array(
+                "2015-10-15T16:00:00-07:00",
+                1,
+                1,
+                Proration::PERIOD_MONTH,
+                "America/Los_Angeles",
+                "2015-11-01T00:00:00-07:00"
             ),
             array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_YEAR, null, "2015-03-01T00:00:00-08:00"),
             array("2015-02-13T14:30:00-08:00", 1, 1, Proration::PERIOD_MONTH, null, "2015-03-01T00:00:00-08:00"),
@@ -193,8 +209,13 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      * @param float $to_price
      * @param float $diff_price
      */
-    public function testSetProratablePeriods(Proration $from_proration, $from_price, Proration $to_proration, $to_price, $diff_price)
-    {
+    public function testSetProratablePeriods(
+        Proration $from_proration,
+        $from_price,
+        Proration $to_proration,
+        $to_price,
+        $diff_price
+    ) {
         $all_periods = array(
             Proration::PERIOD_DAY,
             Proration::PERIOD_WEEK,
@@ -209,7 +230,10 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($from_proration->canProrate());
         $this->assertTrue($to_proration->canProrate());
         
-        $this->assertEquals($diff_price, $to_proration->proratePrice($to_price) - $from_proration->proratePrice($from_price));
+        $this->assertEquals(
+            $diff_price,
+            $to_proration->proratePrice($to_price) - $from_proration->proratePrice($from_price)
+        );
     }
     
     /**

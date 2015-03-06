@@ -154,7 +154,7 @@ class Proration
         $result = null;
 
         if ($current_day != $this->prorate_day) {
-            $first = date('c', strtotime("-" . ($current_day-1) . " days", $start_time));
+            $first = date('c', strtotime('-' . ($current_day-1) . ' days', $start_time));
             $next_first = strtotime($first . ' + 1 month');
 
             $time = strtotime($first);
@@ -167,8 +167,8 @@ class Proration
             }
             
             $result = date(
-                'Y-m-d\T00:00:00P',
-                strtotime("+" . ($day-1) . " days", $time)
+                'c',
+                strtotime('+' . ($day-1) . ' days', strtotime('midnight', $time))
             );
 
             // Set original offset, no timezone given
@@ -235,7 +235,7 @@ class Proration
             $this->start_date,
             date(
                 "c",
-                strtotime($this->start_date . " + " . $this->term . " " . $this->period)
+                strtotime($this->start_date . ' + ' . $this->term . ' ' . $this->period)
             )
         );
         $prorate_days = $this->prorateDays();
