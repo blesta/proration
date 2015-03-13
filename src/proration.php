@@ -31,6 +31,11 @@ class Proration
      * @var int The day to prorate to
      */
     protected $prorate_day;
+    
+    /**
+     * @var string The date to prorate to
+     */
+    protected $prorate_date;
 
     /**
      *
@@ -75,6 +80,7 @@ class Proration
         $this->proratable_periods = $periods;
         return $this;
     }
+    
     /**
      * Set the timezone to use for date calculations
      *
@@ -84,6 +90,18 @@ class Proration
     public function setTimeZone($time_zone)
     {
         $this->time_zone = $time_zone;
+        return $this;
+    }
+    
+    /**
+     * Set the date to prorate to
+     *
+     * @param string $date
+     * @return \Proration
+     */
+    public function setProrateDate($date)
+    {
+        $this->prorate_date = $date;
         return $this;
     }
     
@@ -134,16 +152,43 @@ class Proration
      */
     public function prorateDate()
     {
-        if ($this->prorate_day <= 0 || !in_array($this->period, $this->proratable_periods)) {
-            return null;
-        }
-
         $cur_time_zone = date_default_timezone_get();
-
+        
         if (null !== $this->time_zone) {
             date_default_timezone_set($this->time_zone);
         }
         
+        $date = null;
+        if ($this->prorate_date) {
+            $date = $this->prorateDateFromDate();
+        } else {
+            $date = $this->prorateDateFromDay();
+        }
+        
+        date_default_timezone_set($cur_time_zone);
+        return $date;
+    }
+    
+    /**
+     * Calculate the prorate date from the given date.
+     *
+     * @return string The prorate date
+     */
+    protected function prorateDateFromDate()
+    {
+        return date('c', strtotime('midnight', strtotime($this->prorate_date)));
+    }
+    /**
+     * Calculates the prorate date from the given day of the month
+     *
+     * @return string The prorate date
+     */
+    protected function prorateDateFromDay()
+    {
+        if ($this->prorate_day <= 0 || !in_array($this->period, $this->proratable_periods)) {
+            return null;
+        }
+
         // Fetch time zone offset of given date
         $offset = substr($this->start_date, 19);
 
@@ -177,7 +222,6 @@ class Proration
             }
         }
 
-        date_default_timezone_set($cur_time_zone);
         return $result;
     }
 

@@ -3,7 +3,8 @@
     bootstrap="./tests/bootstrap.php"
     backupGlobals="false"
     beStrictAboutTestsThatDoNotTestAnything="true"
-    forceCoversAnnotation="true">
+    forceCoversAnnotation="true"
+    checkForUnintentionallyCoveredCode="true">
     <testsuites>
         <testsuite name="Blesta/Billing">
             <directory suffix="Test.php">tests/</directory>
