@@ -32,7 +32,7 @@ composer require blesta/proration:dev-master
 
 ## Basic Usage
 ```php
-require "path/to/vendor/blesta/proration/src/proration.php";
+require "path/to/vendor/blesta/proration/src/autoload.php";
 
 $start_date = date('c');
 $prorate_day = 1;
