@@ -11,7 +11,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('Proration', new Proration('2015-02-13T14:30:00-08:00', 1, 1, Proration::PERIOD_MONTH));
     }
-    
+
     /**
      * @covers ::setTimeZone
      * @uses Proration::__construct
@@ -21,7 +21,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $proration = new Proration('2015-02-25T00:00:00-08:00', 1, 1, Proration::PERIOD_MONTH);
         $this->assertInstanceOf('Proration', $proration->setTimeZone('America/New_York'));
     }
-    
+
     /**
      * @covers ::setProrateDate
      * @uses Proration::__construct
@@ -31,7 +31,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $proration = new Proration('2015-02-25T00:00:00-08:00', 1, 1, Proration::PERIOD_MONTH);
         $this->assertInstanceOf('Proration', $proration->setProrateDate('2015-03-01T00:00:00-08:00'));
     }
-    
+
     /**
      * @covers ::startDate
      * @covers ::prorateDay
@@ -46,13 +46,13 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $term = 1;
         $period = Proration::PERIOD_MONTH;
         $proration = new Proration($start_date, $prorate_day, $term, $period);
-        
+
         $this->assertEquals($start_date, $proration->startDate());
         $this->assertEquals($prorate_day, $proration->prorateDay());
         $this->assertEquals($term, $proration->term());
         $this->assertEquals($period, $proration->period());
     }
-    
+
     /**
      * @covers ::prorateDate
      * @covers ::prorateDateFromDay
@@ -70,7 +70,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             $proration->setProrateDate($prorate_date)->setTimeZone($time_zone)->prorateDate()
         );
     }
-    
+
     /**
      * @covers ::canProrate
      * @uses Proration::__construct
@@ -86,7 +86,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             $proration->setProrateDate($prorate_date)->setTimeZone($time_zone)->canProrate()
         );
     }
-    
+
     /**
      * Data provider for testProrateDate
      *
@@ -280,7 +280,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             )
         );
     }
-    
+
     /**
      * @covers ::prorateDays
      * @covers ::daysDiff
@@ -293,7 +293,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $proration = new Proration($start_date, $prorate_day, $term, $period);
         $this->assertEquals($result, $proration->prorateDays());
     }
-    
+
     /**
      * Data provider for testProrateDays
      *
@@ -316,7 +316,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             array('2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_ONETIME, 0)
         );
     }
-    
+
     /**
      * @covers ::proratePrice
      * @covers ::daysDiff
@@ -329,7 +329,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $proration = new Proration($start_date, $prorate_day, $term, $period);
         $this->assertEquals($result, $proration->proratePrice($price));
     }
-    
+
     /**
      * Data provider for testProratePrice
      *
@@ -352,7 +352,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             array(0, 1, 1, Proration::PERIOD_MONTH, 100.0, 0.0)
         );
     }
-    
+
     /**
      * @covers ::setProratablePeriods
      * @covers ::proratePrice
@@ -380,19 +380,19 @@ class ProrationTest extends PHPUnit_Framework_TestCase
             Proration::PERIOD_YEAR,
             Proration::PERIOD_ONETIME
         );
-        
+
         $from_proration->setProratablePeriods($all_periods);
         $to_proration->setProratablePeriods($all_periods);
-        
+
         $this->assertTrue($from_proration->canProrate());
         $this->assertTrue($to_proration->canProrate());
-        
+
         $this->assertEquals(
             $diff_price,
             $to_proration->proratePrice($to_price) - $from_proration->proratePrice($from_price)
         );
     }
-    
+
     /**
      * Provider for testSetProratablePeriods
      * @return array
