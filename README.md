@@ -1,4 +1,4 @@
-# blesta/Proration
+# blesta/proration
 
 Proration Calculator
 
@@ -6,38 +6,17 @@ Proration Calculator
 
 Install via composer:
 
-```js
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "blesta/proration",
-                "version": "dev-master",
-                "dist": {
-                    "url": "http://git.blestalabs.com/billing/proration/repository/archive.zip",
-                    "type": "zip"
-                },
-                "source": {
-                    "url": "http://git.blestalabs.com/billing/proration",
-                    "type": "git",
-                    "reference": "tree/master"
-                }
-            }
-        }
-    ]
-```
 ```sh
-composer require blesta/proration:dev-master
+composer require blesta/proration:~1.0
 ```
 
 ## Basic Usage
-```php
-require "path/to/vendor/blesta/proration/src/autoload.php";
 
+```php
 $start_date = date('c');
 $prorate_day = 1;
 $term = 1;
-$period = "month";
+$period = 'month';
 $proration = new Proration($start_date, $prorate_day, $term, $period);
 
 echo $proration->prorateDate();
