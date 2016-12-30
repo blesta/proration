@@ -1,4 +1,5 @@
 <?php
+namespace Blesta\Proration;
 
 /**
  * Proration calculator

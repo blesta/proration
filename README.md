@@ -13,6 +13,8 @@ composer require blesta/proration:~1.0
 ## Basic Usage
 
 ```php
+use Blesta\Proration\Proration
+
 $start_date = date('c');
 $prorate_day = 1;
 $term = 1;
