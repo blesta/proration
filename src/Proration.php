@@ -8,20 +8,19 @@ namespace Blesta\Proration;
  */
 class Proration
 {
-
-    const PERIOD_YEAR = "year";
-    const PERIOD_MONTH = "month";
-    const PERIOD_WEEK = "week";
-    const PERIOD_DAY = "day";
-    const PERIOD_ONETIME = "onetime";
+    const PERIOD_YEAR = 'year';
+    const PERIOD_MONTH = 'month';
+    const PERIOD_WEEK = 'week';
+    const PERIOD_DAY = 'day';
+    const PERIOD_ONETIME = 'onetime';
 
     /**
      * @var array List of proratable period
      */
-    protected $proratable_periods = array(
+    protected $proratable_periods = [
         self::PERIOD_YEAR,
         self::PERIOD_MONTH
-    );
+    ];
 
     /**
      * @var string Start date
@@ -229,7 +228,7 @@ class Proration
     /**
      * Determine if proration can occur
      *
-     * @return boolean True if proration can occur, false otherwise
+     * @return bool True if proration can occur, false otherwise
      */
     public function canProrate()
     {
@@ -279,7 +278,7 @@ class Proration
         $days_in_term = $this->daysDiff(
             $this->start_date,
             date(
-                "c",
+                'c',
                 strtotime($this->start_date . ' + ' . $this->term . ' ' . $this->period)
             )
         );
