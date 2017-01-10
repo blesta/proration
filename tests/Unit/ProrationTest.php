@@ -1,6 +1,11 @@
 <?php
+namespace Blesta\Proration\Tests\Unit;
+
+use Blesta\Proration\Proration;
+use PHPUnit_Framework_TestCase;
+
 /**
- * @coversDefaultClass Proration
+ * @coversDefaultClass Blesta\Proration\Proration
  */
 class ProrationTest extends PHPUnit_Framework_TestCase
 {
@@ -9,27 +14,27 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      */
     public function testConstruct()
     {
-        $this->assertInstanceOf('Proration', new Proration('2015-02-13T14:30:00-08:00', 1, 1, Proration::PERIOD_MONTH));
+        $this->assertInstanceOf('Blesta\Proration\Proration', new Proration('2015-02-13T14:30:00-08:00', 1, 1, Proration::PERIOD_MONTH));
     }
 
     /**
      * @covers ::setTimeZone
-     * @uses Proration::__construct
+     * @uses Blesta\Proration\Proration::__construct
      */
     public function testSetTimeZone()
     {
         $proration = new Proration('2015-02-25T00:00:00-08:00', 1, 1, Proration::PERIOD_MONTH);
-        $this->assertInstanceOf('Proration', $proration->setTimeZone('America/New_York'));
+        $this->assertInstanceOf('Blesta\Proration\Proration', $proration->setTimeZone('America/New_York'));
     }
 
     /**
      * @covers ::setProrateDate
-     * @uses Proration::__construct
+     * @uses Blesta\Proration\Proration::__construct
      */
     public function testSetProrateDate()
     {
         $proration = new Proration('2015-02-25T00:00:00-08:00', 1, 1, Proration::PERIOD_MONTH);
-        $this->assertInstanceOf('Proration', $proration->setProrateDate('2015-03-01T00:00:00-08:00'));
+        $this->assertInstanceOf('Blesta\Proration\Proration', $proration->setProrateDate('2015-03-01T00:00:00-08:00'));
     }
 
     /**
@@ -37,7 +42,7 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      * @covers ::prorateDay
      * @covers ::term
      * @covers ::period
-     * @uses Proration::__construct
+     * @uses Blesta\Proration\Proration::__construct
      */
     public function testGetters()
     {
@@ -57,9 +62,9 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      * @covers ::prorateDate
      * @covers ::prorateDateFromDay
      * @covers ::prorateDateFromDate
-     * @uses Proration::__construct
-     * @uses Proration::setTimeZone
-     * @uses Proration
+     * @uses Blesta\Proration\Proration::__construct
+     * @uses Blesta\Proration\Proration::setTimeZone
+     * @uses Blesta\Proration\Proration
      * @dataProvider prorateDateProvider
      */
     public function testProrateDate($start_date, $prorate_day, $term, $period, $time_zone, $prorate_date, $result)
@@ -73,9 +78,9 @@ class ProrationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ::canProrate
-     * @uses Proration::__construct
-     * @uses Proration::setTimeZone
-     * @uses Proration
+     * @uses Blesta\Proration\Proration::__construct
+     * @uses Blesta\Proration\Proration::setTimeZone
+     * @uses Blesta\Proration\Proration
      * @dataProvider prorateDateProvider
      */
     public function testCanProrate($start_date, $prorate_day, $term, $period, $time_zone, $prorate_date, $result)
@@ -94,9 +99,9 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      */
     public function prorateDateProvider()
     {
-        return array(
+        return [
             // UTC to time zone
-            array(
+            [
                 '2015-02-13T05:00:00-00:00',
                 1,
                 1,
@@ -104,9 +109,9 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 'America/New_York',
                 null,
                 '2015-03-01T00:00:00-05:00'
-            ),
+            ],
             // DST starts
-            array(
+            [
                 '2015-03-01T01:00:00-08:00',
                 8,
                 1,
@@ -114,8 +119,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 'America/Los_Angeles',
                 null,
                 '2015-03-08T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-03-01T14:15:22-08:00',
                 8,
                 1,
@@ -123,9 +128,9 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 'America/Los_Angeles',
                 null,
                 '2015-03-08T00:00:00-08:00'
-            ),
+            ],
             // DST ends
-            array(
+            [
                 '2015-10-15T01:00:00-07:00',
                 1,
                 1,
@@ -133,8 +138,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 'America/Los_Angeles',
                 null,
                 '2015-11-01T00:00:00-07:00'
-            ),
-            array(
+            ],
+            [
                 '2015-10-15T16:00:00-07:00',
                 1,
                 1,
@@ -142,8 +147,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 'America/Los_Angeles',
                 null,
                 '2015-11-01T00:00:00-07:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 5,
                 1,
@@ -151,8 +156,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 'America/Los_Angeles',
                 '2015-03-01T12:00:00-05:00',
                 '2015-03-01T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 1,
                 1,
@@ -160,8 +165,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-03-01T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 1,
                 1,
@@ -169,8 +174,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-03-01T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 31,
                 1,
@@ -178,8 +183,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-02-28T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-03-13T14:30:00-08:00',
                 31,
                 1,
@@ -187,8 +192,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-03-31T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-24T14:30:00-08:00',
                 26,
                 1,
@@ -196,8 +201,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-02-26T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-01-31T00:00:00-08:00',
                 1,
                 1,
@@ -205,8 +210,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-02-01T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-01T00:00:00-08:00',
                 1,
                 1,
@@ -214,8 +219,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 null
-            ),
-            array(
+            ],
+            [
                 '2015-02-28T00:00:00-08:00',
                 1,
                 1,
@@ -223,8 +228,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2015-03-01T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2016-02-29T00:00:00-08:00',
                 1,
                 1,
@@ -232,8 +237,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 '2016-03-01T00:00:00-08:00'
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 1,
                 1,
@@ -241,8 +246,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 null
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 1,
                 1,
@@ -250,8 +255,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 null
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 1,
                 1,
@@ -259,8 +264,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 null
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 0,
                 1,
@@ -268,8 +273,8 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 null
-            ),
-            array(
+            ],
+            [
                 '2015-02-13T14:30:00-08:00',
                 -1,
                 1,
@@ -277,15 +282,15 @@ class ProrationTest extends PHPUnit_Framework_TestCase
                 null,
                 null,
                 null
-            )
-        );
+            ]
+        ];
     }
 
     /**
      * @covers ::prorateDays
      * @covers ::daysDiff
-     * @uses Proration
-     * @uses Proration::__construct
+     * @uses Blesta\Proration\Proration
+     * @uses Blesta\Proration\Proration::__construct
      * @dataProvider prorateDaysProvider
      */
     public function testProrateDays($start_date, $prorate_day, $term, $period, $result)
@@ -301,27 +306,27 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      */
     public function prorateDaysProvider()
     {
-        return array(
-            array('2015-02-28T00:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 1),
-            array('2015-02-28T11:59:59-08:00', 1, 1, Proration::PERIOD_MONTH, 1),
-            array('2015-02-28T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 1),
-            array('2015-02-28T12:00:01-08:00', 1, 1, Proration::PERIOD_MONTH, 0),
-            array('2015-02-28T12:00:00-08:00', 2, 1, Proration::PERIOD_MONTH, 2),
+        return [
+            ['2015-02-28T00:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 1],
+            ['2015-02-28T11:59:59-08:00', 1, 1, Proration::PERIOD_MONTH, 1],
+            ['2015-02-28T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 1],
+            ['2015-02-28T12:00:01-08:00', 1, 1, Proration::PERIOD_MONTH, 0],
+            ['2015-02-28T12:00:00-08:00', 2, 1, Proration::PERIOD_MONTH, 2],
 
-            array('2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 1),
-            array('2015-01-31T12:00:01-08:00', 1, 1, Proration::PERIOD_MONTH, 0),
-            array('2015-01-31T11:59:59-08:00', 1, 1, Proration::PERIOD_YEAR, 1),
-            array('2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_WEEK, 0),
-            array('2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_DAY, 0),
-            array('2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_ONETIME, 0)
-        );
+            ['2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 1],
+            ['2015-01-31T12:00:01-08:00', 1, 1, Proration::PERIOD_MONTH, 0],
+            ['2015-01-31T11:59:59-08:00', 1, 1, Proration::PERIOD_YEAR, 1],
+            ['2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_WEEK, 0],
+            ['2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_DAY, 0],
+            ['2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_ONETIME, 0]
+        ];
     }
 
     /**
      * @covers ::proratePrice
      * @covers ::daysDiff
-     * @uses Proration
-     * @uses Proration::__construct
+     * @uses Blesta\Proration\Proration
+     * @uses Blesta\Proration\Proration::__construct
      * @dataProvider proratePriceProvider
      */
     public function testProratePrice($start_date, $prorate_day, $term, $period, $price, $result)
@@ -337,27 +342,27 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      */
     public function proratePriceProvider()
     {
-        return array(
+        return [
             // 1 day of proration over 31 days ~= 0.0322580 * 100 = 3.2258
-            array('2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 100.0, 3.2258),
+            ['2015-01-31T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 100.0, 3.2258],
             // 30 days of proration over 31 days ~= 0.9677418 * 100 = 96.7742
-            array('2015-01-02T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 100.0, 96.7742),
+            ['2015-01-02T12:00:00-08:00', 1, 1, Proration::PERIOD_MONTH, 100.0, 96.7742],
             // 29 days of proration over 31 days ~= 0.9354838 * 100 = 93.5484
-            array('2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_MONTH, 100.0, 93.5484),
+            ['2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_MONTH, 100.0, 93.5484],
             // Bad period
-            array('2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_DAY, 100.0, 0.0),
-            array('2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_WEEK, 100.0, 0.0),
-            array('2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_ONETIME, 100.0, 0.0),
+            ['2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_DAY, 100.0, 0.0],
+            ['2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_WEEK, 100.0, 0.0],
+            ['2015-01-02T12:00:01-08:00', 1, 1, Proration::PERIOD_ONETIME, 100.0, 0.0],
             // Bad date value
-            array(0, 1, 1, Proration::PERIOD_MONTH, 100.0, 0.0)
-        );
+            [0, 1, 1, Proration::PERIOD_MONTH, 100.0, 0.0]
+        ];
     }
 
     /**
      * @covers ::setProratablePeriods
      * @covers ::proratePrice
      * @covers ::canProrate
-     * @uses Proration
+     * @uses Blesta\Proration\Proration
      * @dataProvider proratablePeriodsProvider
      *
      * @param Proration $from_proration
@@ -373,13 +378,13 @@ class ProrationTest extends PHPUnit_Framework_TestCase
         $to_price,
         $diff_price
     ) {
-        $all_periods = array(
+        $all_periods = [
             Proration::PERIOD_DAY,
             Proration::PERIOD_WEEK,
             Proration::PERIOD_MONTH,
             Proration::PERIOD_YEAR,
             Proration::PERIOD_ONETIME
-        );
+        ];
 
         $from_proration->setProratablePeriods($all_periods);
         $to_proration->setProratablePeriods($all_periods);
@@ -399,35 +404,35 @@ class ProrationTest extends PHPUnit_Framework_TestCase
      */
     public function proratablePeriodsProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 new Proration('2015-02-25T08:00:00-00:00', 1, 1, Proration::PERIOD_MONTH),
                 1.00,
                 new Proration('2015-02-25T08:00:00-00:00', 1, 1, Proration::PERIOD_MONTH),
                 25.01,
                 3.4300
-            ),
-            array(
+            ],
+            [
                 new Proration('2015-02-25T08:00:00-00:00', 1, 1, Proration::PERIOD_MONTH),
                 25.01,
                 new Proration('2015-02-25T08:00:00-00:00', 1, 3, Proration::PERIOD_YEAR),
                 350.00,
                 -2.2955
-            ),
-            array(
+            ],
+            [
                 new Proration('2015-02-25T08:00:00-00:00', 26, 1, Proration::PERIOD_DAY),
                 1.00,
                 new Proration('2015-02-25T08:00:00-00:00', 26, 1, Proration::PERIOD_DAY),
                 0.50,
                 -0.50
-            ),
-            array(
+            ],
+            [
                 new Proration('2015-02-25T08:00:00-00:00', 1, 2, Proration::PERIOD_DAY),
                 0.75,
                 new Proration('2015-02-25T08:00:00-00:00', 1, 1, Proration::PERIOD_MONTH),
                 25.01,
                 2.0729
-            )
-        );
+            ]
+        ];
     }
 }
