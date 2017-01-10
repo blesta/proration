@@ -7,7 +7,7 @@ Proration Calculator
 Install via composer:
 
 ```sh
-composer require blesta/proration:~1.0
+composer require blesta/proration:~2.0
 ```
 
 ## Basic Usage
